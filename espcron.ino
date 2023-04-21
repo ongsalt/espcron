@@ -68,15 +68,19 @@ void serverSetup() {
   });
 
   server.on("/main.1.js", HTTP_GET, [] () {
-    TRACE("[WebServer] get /main.js\n");
+    TRACE("[WebServer] get /main.1.js\n");
     server.send(200, "text/javascript", FPSTR(WebBuiltin::main1));
   });
 
   server.on("/main.2.js", HTTP_GET, [] () {
-    TRACE("[WebServer] get /main.js\n");
+    TRACE("[WebServer] get /main.2.js\n");
     server.send(200, "text/javascript", FPSTR(WebBuiltin::main2));
   });
 
+    server.on("/main.3.js", HTTP_GET, [] () {
+    TRACE("[WebServer] get /main.3.js\n");
+    server.send(200, "text/javascript", FPSTR(WebBuiltin::main3));
+  });
 
   server.on("/api.js", HTTP_GET, [] () {
     TRACE("[WebServer] get /api.js\n");
@@ -101,13 +105,16 @@ void serverSetup() {
     int durationHour = duration / 100;
     int durationMinute = duration % 100;
 
+    // add -> just fucking add
+    store.addPeriod(Period { onHour, onMinute, durationHour, durationMinute });
+
     TRACE("[WebServer] Get /api/on/");
     TRACE(server.pathArg(0).c_str());
     TRACE("/to/");
     TRACE(server.pathArg(1).c_str());
     TRACE("\n");
 
-    server.send(200, "text/html; charset=utf-8", "{ \"ok\": true }");
+    server.send(200, "text/html; charset=utf-8", "{ \"ok\": true, \"index\": " + String(store._periodSize - 1) + " }");
   });
 
   // server.on(UriRegex("^\\/api/remove\\/([0-9]+){4}\\/to\\/([0-9]+){4}$"), HTTP_GET, [] () {
@@ -126,6 +133,11 @@ void serverSetup() {
     TRACE("/to/");
     TRACE(server.pathArg(1).c_str());
     TRACE("\n");
+
+    const int index = store.findPeriod(onHour, onMinute, durationHour, durationMinute);
+    if (index == -1) {
+      server.send(404, "text/html; charset=utf-8", "{ \"ok\": false, \"message\": \"not exist\" }");
+    }
 
     server.send(200, "text/html; charset=utf-8", "{ \"ok\": true }");
   });
@@ -164,17 +176,48 @@ void serverSetup() {
     TRACE(server.pathArg(0).c_str());
     TRACE("\n");
 
+    store.setMode(mode);
+
     server.send(200, "application/json; charset=utf-8", "{ \"ok\": true }");
+  });
+
+  server.on("/api/store/reset", HTTP_GET, [] () {
+
+    TRACE("[WebServer] Get /api/store/reset");  
+
+    store.reset();
+
+    server.send(200, "text/html; charset=utf-8", "{ \"ok\": true }");
   });
 
   server.on("/api/get/every", HTTP_GET, [] () {
 
-    TRACE("[WebServer] Get /api/get/on");  
+    TRACE("[WebServer] Get /api/get/every");  
 
     const auto result = store.getEvery().toJSON();
 
     server.send(200, "text/html; charset=utf-8", result);
   });
+
+  server.on("/api/get/period", HTTP_GET, [] () {
+
+    TRACE("[WebServer] Get /api/get/period");  
+
+    String result;
+
+    result += "{";
+    result += " \"size\": " + String(store._periodSize) + ",\n";
+    result += " \"data\": [";
+    for (int i = 0; i < store._periodSize; i++) {
+      result += store.getPeriod(i).toJSON();
+      result += ",\n";
+    }
+    result += "]";
+    result += "}";
+
+    server.send(200, "text/html; charset=utf-8", result);
+  });
+
 }
 
 void setup() {

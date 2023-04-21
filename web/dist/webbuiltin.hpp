@@ -3,6 +3,9 @@ namespace WebBuiltin {
 
 static const char apiJs[] PROGMEM =
 R"==(
+const prefixURL = '192.168.153.220'
+const apiHeader = {}
+
 const API = {
     to2(it) {
         if (it < 10) {
@@ -11,22 +14,26 @@ const API = {
         return `${it}`
     },
     async setMode(mode) {
-        return await fetch(`/api/mode${mode ? 1 : 0}`)
+        const res = await fetch(`http://${prefixURL}/api/mode/${mode ? 1 : 0}`, {
+            mode: 'no-cors'
+        })
+        console.log(await res.text())
+        return res
     },
     async addTime(time) {
-        const url = `/api/on/${to2(time.start.hour)}${to2(time.start.minute)}/to/${to2(time.end.hour)}${to2(time.end.minute)}`
+        const url = `http://${prefixURL}/api/on/${to2(time.start.hour)}${to2(time.start.minute)}/to/${to2(time.end.hour)}${to2(time.end.minute)}`
         console.log(url)
-        return await fetch(url)
+        return await fetch(url, { mode: 'no-cors' })
     },
     async removeTime(time) {
-        const url = `/api/remove/${to2(time.start.hour)}${to2(time.start.minute)}/to/${to2(time.end.hour)}${to2(time.end.minute)}`
+        const url = `http://${prefixURL}/api/remove/${to2(time.start.hour)}${to2(time.start.minute)}/to/${to2(time.end.hour)}${to2(time.end.minute)}`
         console.log(url)
-        return await fetch(url)
+        return await fetch(url, { mode: 'no-cors' })
     },
     async setEvery(time) {
-        const url = `/api/every/${to2(time.start.hour)}${to2(time.start.minute)}/for/${to2(time.end.hour)}${to2(time.end.minute)}`
+        const url = `http://${prefixURL}/api/every/${to2(time.start.hour)}${to2(time.start.minute)}/for/${to2(time.end.hour)}${to2(time.end.minute)}`
         console.log(url)
-        return await fetch(url)
+        return await fetch(url, { mode: 'no-cors' })
     },
 
 }
@@ -270,8 +277,8 @@ R"==(
   <main id="mode-selector">
     <p> เลือกโหมด </p>
     <div id="rail">
-      <span onclick="mode = true; update()"> ตั้งเวลา </span>
-      <span onclick="mode = false; update()" class="active"> สลับ </span>
+      <span onclick="toggleMode(true)"> ตั้งเวลา </span>
+      <span onclick="toggleMode(false)" class="active"> สลับ </span>
     </div>
   </main>
 
@@ -435,6 +442,11 @@ const addTimeItem = () => {
 
 $('s1').onchange = e => swapConfig.every.hour = parseInt(e.target.value)
 $('s2').onchange = e => swapConfig.every.minute = parseInt(e.target.value)
+)==";
+
+
+static const char main3[] PROGMEM =
+R"==(
 $('s3').onchange = e => swapConfig.for.hour = parseInt(e.target.value)
 $('s4').onchange = e => swapConfig.for.minute = parseInt(e.target.value)
 
@@ -451,9 +463,12 @@ const update = () => {
     }
 }
 
-const toggleMode = () => {
-    mode = !mode
-    update()
+const toggleMode = (value) => {
+    if (value != mode) {
+        API.setMode(value)
+        mode = value
+        update()
+    }
 }
 
 const init = () => {
