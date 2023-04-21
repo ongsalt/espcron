@@ -90,7 +90,8 @@ void serverSetup() {
 
   // API route
 
-  server.on(UriRegex("^\\/api/on\\/([0-9]+){4}\\/to\\/([0-9]+){4}$"), HTTP_GET, [] () {
+  // server.on(UriRegex("^\\/api/on\\/([0-9]+){4}\\/to\\/([0-9]+){4}$"), HTTP_GET, [] () {
+  server.on(UriBraces("/api/on/{}/to/{}"), HTTP_GET, [] () {
     int on = server.pathArg(0).toInt();
     int duration = server.pathArg(1).toInt();
 
@@ -109,7 +110,8 @@ void serverSetup() {
     server.send(200, "text/html; charset=utf-8", "{ \"ok\": true }");
   });
 
-  server.on(UriRegex("^\\/api/remove\\/([0-9]+){4}\\/to\\/([0-9]+){4}$"), HTTP_GET, [] () {
+  // server.on(UriRegex("^\\/api/remove\\/([0-9]+){4}\\/to\\/([0-9]+){4}$"), HTTP_GET, [] () {
+  server.on(UriBraces("/api/remove/{}/to/{}"), HTTP_GET, [] () {
     int on = server.pathArg(0).toInt();
     int duration = server.pathArg(1).toInt();
 
@@ -128,7 +130,8 @@ void serverSetup() {
     server.send(200, "text/html; charset=utf-8", "{ \"ok\": true }");
   });
 
-  server.on(UriRegex("^\\/api/every\\/([0-9]+){4}\\/for\\/([0-9]+){4}$"), HTTP_GET, [] () {
+  // server.on(UriRegex("^\\/api/every\\/([0-9]+){4}\\/for\\/([0-9]+){4}$"), HTTP_GET, [] () {
+  server.on(UriBraces("/api/every/{}/for/{}"), HTTP_GET, [] () {
     int every = server.pathArg(0).toInt();
     int duration = server.pathArg(1).toInt();
 
