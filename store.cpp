@@ -6,6 +6,23 @@ struct Period {
   int startMinute;
   int endHour;
   int endMinute;
+
+    String toJSON() {
+    String result;
+
+    result += "{\n";
+    result += "  \"start\": {\n";
+    result += "    \"hour\": " + String(startHour) + ",\n";
+    result += "    \"minute\": " + String(startMinute) + "\n";
+    result += "    },\n";
+    result += "  \"end\": {\n";
+    result += "    \"hour\": " + String(endHour) + ",\n";
+    result += "    \"minute\": " + String(endMinute) + "\n";
+    result += "    }\n";
+    result += "}";
+
+    return result;
+  }
 };
 
 struct Every {
@@ -36,22 +53,29 @@ enum StorageOffset {
   mode = 0,
   periodSize = 4,  // maximum size is 255
   every = 12,
-  period = 256,
+  period = 128,
 };
 
 class Store {
-private:
+public:
 
   int _periodSize = 0;
 
-public:
   int getAsInt(StorageOffset offset) {
     return EEPROM.read(offset);
+  }
+
+  void reset() {
+    for (int i = 0; i < 512; i++) { EEPROM.write(i, 0); }
+    _periodSize = 0;
   }
 
   void init() {
     EEPROM.begin(512);
     _periodSize = getAsInt(StorageOffset::periodSize);
+    if (_periodSize >= ((512 - 128) / 4)) {
+      reset();
+    }
   }
 
   Every getEvery() {
@@ -70,13 +94,13 @@ public:
     EEPROM.write(StorageOffset::every + 3, forMinute);
   }
 
-  Period getPeriod(const int& id) {
+  Period getPeriod(const int index) {
     Period result;
-    int padding = 4 * _periodSize;
-    result.startHour = EEPROM.read(StorageOffset::period + padding);
-    result.startMinute = EEPROM.read(StorageOffset::period + padding);
-    result.endHour = EEPROM.read(StorageOffset::period + padding);
-    result.endMinute = EEPROM.read(StorageOffset::period + padding);
+    int padding = 4 * index;
+    result.startHour   = EEPROM.read(StorageOffset::period + padding);
+    result.startMinute = EEPROM.read(StorageOffset::period + padding + 1);
+    result.endHour     = EEPROM.read(StorageOffset::period + padding + 2);
+    result.endMinute   = EEPROM.read(StorageOffset::period + padding + 3);
     return result;
   }
 
@@ -90,21 +114,49 @@ public:
   }
 
   void removePeriod(const int index) {
-    if (_periodSize <= 0) {
+    if (index >= _periodSize || _periodSize <= 0) {
       return;
     }
-    int padding = 4 * _periodSize;
-    EEPROM.write(StorageOffset::period + padding    , 0);
-    EEPROM.write(StorageOffset::period + padding + 1, 0);
-    EEPROM.write(StorageOffset::period + padding + 2, 0);
-    EEPROM.write(StorageOffset::period + padding + 3, 0);
+
     EEPROM.write(StorageOffset::periodSize, --_periodSize);
-    
+
     if (index == _periodSize) { // after -1
       return;
     }
 
-    // move last one to this position
+    // move last one to index position
+    int padding = 4 * index;
+    const auto last = getPeriod(_periodSize);
 
+    EEPROM.write(StorageOffset::period + padding    , last.startHour);
+    EEPROM.write(StorageOffset::period + padding + 1, last.startMinute);
+    EEPROM.write(StorageOffset::period + padding + 2, last.endHour);
+    EEPROM.write(StorageOffset::period + padding + 3, last.endMinute);
+  }
+
+  int findPeriod(int startHour, int startMinute, int endHour, int endMinute) {
+    int index = 0;
+    
+    while (index < _periodSize) {
+      const auto current = getPeriod(index);
+      if (
+        current.startHour == startHour && current.endHour == current.endHour &&
+        current.startMinute == startMinute && current.endMinute == endMinute
+      ) {
+        return index;
+      }
+
+      index++;
+    }
+
+    return -1;
+  }
+
+  void setMode(bool mode) {
+    EEPROM.write(StorageOffset::mode, mode);
+  }
+
+  bool getMode(bool mode) {
+    return EEPROM.read(StorageOffset::mode);
   }
 };
