@@ -1,11 +1,5 @@
-$('s3').onchange = e => {
-    swapConfig.for.hour = parseInt(e.target.value)
-    save2()
-}
-$('s4').onchange = e => {
-    swapConfig.for.minute = parseInt(e.target.value)
-    save2()
-}
+$('s3').onchange = e => swapConfig.for.hour = parseInt(e.target.value)
+$('s4').onchange = e => swapConfig.for.minute = parseInt(e.target.value)
 
 const update = () => {
     swapDisplay.hidden = mode

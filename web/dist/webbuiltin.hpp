@@ -522,27 +522,15 @@ const addTimeItem = () => {
 }
 
 
-$('s1').onchange = e => {
-    swapConfig.every.hour = parseInt(e.target.value)
-    save2()
-}
-$('s2').onchange = e => {
-    swapConfig.every.minute = parseInt(e.target.value)
-    save2()
-}
+$('s1').onchange = e => swapConfig.every.hour = parseInt(e.target.value)
+$('s2').onchange = e => swapConfig.every.minute = parseInt(e.target.value)
 )==";
 
 
 static const char main3[] PROGMEM =
 R"==(
-$('s3').onchange = e => {
-    swapConfig.for.hour = parseInt(e.target.value)
-    save2()
-}
-$('s4').onchange = e => {
-    swapConfig.for.minute = parseInt(e.target.value)
-    save2()
-}
+$('s3').onchange = e => swapConfig.for.hour = parseInt(e.target.value)
+$('s4').onchange = e => swapConfig.for.minute = parseInt(e.target.value)
 
 const update = () => {
     swapDisplay.hidden = mode

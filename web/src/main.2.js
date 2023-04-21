@@ -20,11 +20,5 @@ const addTimeItem = () => {
 }
 
 
-$('s1').onchange = e => {
-    swapConfig.every.hour = parseInt(e.target.value)
-    save2()
-}
-$('s2').onchange = e => {
-    swapConfig.every.minute = parseInt(e.target.value)
-    save2()
-}
+$('s1').onchange = e => swapConfig.every.hour = parseInt(e.target.value)
+$('s2').onchange = e => swapConfig.every.minute = parseInt(e.target.value)
