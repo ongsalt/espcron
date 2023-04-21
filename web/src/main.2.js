@@ -15,6 +15,8 @@ const addTimeItem = () => {
         timeList[id].end.hour = parseInt(t.slice(0, 2))
         timeList[id].end.minute = parseInt(t.slice(3, 5))
     }
+    
+    timeDiff.push(id)
 }
 
 

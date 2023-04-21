@@ -4,6 +4,7 @@ const rail = $('rail')
 const swapDisplay = $('swap-mode')
 const timeDisplay = $('time-mode')
 const timeListDisplay = $('list')
+const timeDiff = []
 
 // let mode = |mode|
 let mode = true
@@ -69,7 +70,6 @@ const timeItemTemplate = (id, time) => `
     </button>
   </div>
   `
-
 const timeListMapper = () => {
     timeListDisplay.innerHTML = timeList.map((it, index) => {
         const html = timeItemTemplate(index, it)
@@ -78,6 +78,7 @@ const timeListMapper = () => {
 }
 
 const removeTimeItem = (id) => {
+    API.removeTime(timeList[id])
     timeList.splice(id, 1)
     timeListMapper()
 }

@@ -70,6 +70,12 @@ public:
     _periodSize = 0;
   }
 
+  void resetPeriod() {
+    _periodSize = 0;
+    EEPROM.write(StorageOffset::periodSize, 0);
+  }
+
+
   void init() {
     EEPROM.begin(512);
     _periodSize = getAsInt(StorageOffset::periodSize);

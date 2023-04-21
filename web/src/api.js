@@ -6,7 +6,7 @@ let headers = new Headers({
 });
 
 const postHeader = {
-    // mode: 'no-cors',
+    mode: 'no-cors',
     method: 'POST',
     headers
 }
@@ -25,43 +25,38 @@ const API = {
         return `${it}`
     },
     async setMode(mode) {
-        const res = await fetch(`${prefixURL}/api/mode/${mode ? 1 : 0}`, postHeader)
-        console.log(await res.text())
-        return res
+        const url = `${prefixURL}/api/mode/${mode ? 1 : 0}`
+        const res = await fetch(url, postHeader)
+        const data = await res.json()
+        return data
     },
     async addTime(time) {
         const url = `${prefixURL}/api/on/${to2(time.start.hour)}${to2(time.start.minute)}/to/${to2(time.end.hour)}${to2(time.end.minute)}`
-        console.log(url)
         const res = await fetch(url, postHeader)
         const data = await res.json()
         return data
     },
     async removeTime(time) {
         const url = `${prefixURL}/api/remove/${to2(time.start.hour)}${to2(time.start.minute)}/to/${to2(time.end.hour)}${to2(time.end.minute)}`
-        console.log(url)
         const res = await fetch(url, postHeader)
         const data = await res.json()
         return data
     },
     async setEvery(time) {
         const url = `${prefixURL}/api/every/${to2(time.start.hour)}${to2(time.start.minute)}/for/${to2(time.end.hour)}${to2(time.end.minute)}`
-        console.log(url)
         const res = await fetch(url, postHeader)
         const data = await res.json()
         return data
     },
     async getMode() {
         const url = `${prefixURL}/api/mode`
-        console.log(url)
         const res = await fetch(url, getHeader)
         const data = await res.json()
         return data
     },
     async getEvery() {
         const url = `${prefixURL}/api/every`
-        console.log(url)
         const res = await fetch(url, getHeader)
-        console.log(res)
         const data = await res.json()
         return data
     },
@@ -72,5 +67,19 @@ const API = {
         const data = await res.json()
         return data.data
     },
+    async resetTime() {
+        const url = `${prefixURL}/api/on/reset`
+        console.log(url)
+        const res = await fetch(url, postHeader)
+        const data = await res.json()
+        return data.data
+    },
+    async resetAll() {
+        const url = `${prefixURL}/api/store/reset`
+        console.log(url)
+        const res = await fetch(url, postHeader)
+        const data = await res.json()
+        return data.data
+    }
 
 }

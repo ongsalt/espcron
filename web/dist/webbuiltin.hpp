@@ -11,7 +11,7 @@ let headers = new Headers({
 });
 
 const postHeader = {
-    // mode: 'no-cors',
+    mode: 'no-cors',
     method: 'POST',
     headers
 }
@@ -30,43 +30,38 @@ const API = {
         return `${it}`
     },
     async setMode(mode) {
-        const res = await fetch(`${prefixURL}/api/mode/${mode ? 1 : 0}`, postHeader)
-        console.log(await res.text())
-        return res
+        const url = `${prefixURL}/api/mode/${mode ? 1 : 0}`
+        const res = await fetch(url, postHeader)
+        const data = await res.json()
+        return data
     },
     async addTime(time) {
         const url = `${prefixURL}/api/on/${to2(time.start.hour)}${to2(time.start.minute)}/to/${to2(time.end.hour)}${to2(time.end.minute)}`
-        console.log(url)
         const res = await fetch(url, postHeader)
         const data = await res.json()
         return data
     },
     async removeTime(time) {
         const url = `${prefixURL}/api/remove/${to2(time.start.hour)}${to2(time.start.minute)}/to/${to2(time.end.hour)}${to2(time.end.minute)}`
-        console.log(url)
         const res = await fetch(url, postHeader)
         const data = await res.json()
         return data
     },
     async setEvery(time) {
         const url = `${prefixURL}/api/every/${to2(time.start.hour)}${to2(time.start.minute)}/for/${to2(time.end.hour)}${to2(time.end.minute)}`
-        console.log(url)
         const res = await fetch(url, postHeader)
         const data = await res.json()
         return data
     },
     async getMode() {
         const url = `${prefixURL}/api/mode`
-        console.log(url)
         const res = await fetch(url, getHeader)
         const data = await res.json()
         return data
     },
     async getEvery() {
         const url = `${prefixURL}/api/every`
-        console.log(url)
         const res = await fetch(url, getHeader)
-        console.log(res)
         const data = await res.json()
         return data
     },
@@ -77,6 +72,20 @@ const API = {
         const data = await res.json()
         return data.data
     },
+    async resetTime() {
+        const url = `${prefixURL}/api/on/reset`
+        console.log(url)
+        const res = await fetch(url, postHeader)
+        const data = await res.json()
+        return data.data
+    },
+    async resetAll() {
+        const url = `${prefixURL}/api/store/reset`
+        console.log(url)
+        const res = await fetch(url, postHeader)
+        const data = await res.json()
+        return data.data
+    }
 
 }
 )==";
@@ -317,7 +326,7 @@ R"==(
     <!-- <p> เวลาระบบ |systemTime| </p> -->
     <p> ไม่มี </p>
   </main>
-  
+
   <main id="mode-selector">
     <p> เลือกโหมด </p>
     <div id="rail">
@@ -328,7 +337,7 @@ R"==(
 
   <main id="swap-mode">
     <div>
-    <h3> เปืดเครื่องสูบน้ำทุกๆ </h3>
+      <h3> เปืดเครื่องสูบน้ำทุกๆ </h3>
       <input id="s1" name="ehour" type="number" value=|everyHour| min="0" max="24">
       <label for="ehour"> ชั่วโมง </label>
       <input id="s2" name="eminute" type="number" value=|everyMinute| min="0" max="60">
@@ -361,16 +370,26 @@ R"==(
       </div> -->
     </div>
 
-    <button class="icon add" onclick="addTimeItem()">
-      <svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 96 960 960" width="18">
-        <path
-          d="M479.825 856Q467 856 458.5 847.375T450 826V606H230q-12.75 0-21.375-8.675-8.625-8.676-8.625-21.5 0-12.825 8.625-21.325T230 546h220V326q0-12.75 8.675-21.375 8.676-8.625 21.5-8.625 12.825 0 21.325 8.625T510 326v220h220q12.75 0 21.375 8.675 8.625 8.676 8.625 21.5 0 12.825-8.625 21.325T730 606H510v220q0 12.75-8.675 21.375-8.676 8.625-21.5 8.625Z" />
-      </svg>
-    </button>
+    <div style="display: flex; gap: 12px;">
+
+      <button class="icon add" onclick="addTimeItem()">
+        <svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 96 960 960" width="18">
+          <path
+            d="M479.825 856Q467 856 458.5 847.375T450 826V606H230q-12.75 0-21.375-8.675-8.625-8.676-8.625-21.5 0-12.825 8.625-21.325T230 546h220V326q0-12.75 8.675-21.375 8.676-8.625 21.5-8.625 12.825 0 21.325 8.625T510 326v220h220q12.75 0 21.375 8.675 8.625 8.676 8.625 21.5 0 12.825-8.625 21.325T730 606H510v220q0 12.75-8.675 21.375-8.676 8.625-21.5 8.625Z" />
+        </svg>
+      </button>
+      <button class="icon add" onclick="save()">
+        <svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 96 960 960" width="18">
+          <path
+            d="M180 936q-24 0-42-18t-18-42V276q0-24 18-42t42-18h478q12.444 0 23.722 5T701 234l121 121q8 8 13 19.278 5 11.278 5 23.722v478q0 24-18 42t-42 18H180Zm600-536L656 276H180v600h600V400ZM479.765 811Q523 811 553.5 780.735q30.5-30.264 30.5-73.5Q584 664 553.735 633.5q-30.264-30.5-73.5-30.5Q437 603 406.5 633.265q-30.5 30.264-30.5 73.5Q376 750 406.265 780.5q30.264 30.5 73.5 30.5ZM263 472h298q12.75 0 21.375-8.625T591 442v-83q0-12.75-8.625-21.375T561 329H263q-12.75 0-21.375 8.625T233 359v83q0 12.75 8.625 21.375T263 472Zm-83-72v476-600 124Z" />
+        </svg>
+      </button>
+    </div>
 
   </main>
 
 </body>
+
 </html>
 )==";
 
@@ -383,6 +402,7 @@ const rail = $('rail')
 const swapDisplay = $('swap-mode')
 const timeDisplay = $('time-mode')
 const timeListDisplay = $('list')
+const timeDiff = []
 
 // let mode = |mode|
 let mode = true
@@ -448,7 +468,6 @@ const timeItemTemplate = (id, time) => `
     </button>
   </div>
   `
-
 const timeListMapper = () => {
     timeListDisplay.innerHTML = timeList.map((it, index) => {
         const html = timeItemTemplate(index, it)
@@ -457,6 +476,7 @@ const timeListMapper = () => {
 }
 
 const removeTimeItem = (id) => {
+    API.removeTime(timeList[id])
     timeList.splice(id, 1)
     timeListMapper()
 }
@@ -482,6 +502,8 @@ const addTimeItem = () => {
         timeList[id].end.hour = parseInt(t.slice(0, 2))
         timeList[id].end.minute = parseInt(t.slice(3, 5))
     }
+    
+    timeDiff.push(id)
 }
 
 
@@ -536,6 +558,13 @@ const init = async () => {
 
     timeListMapper()
     update()
+}
+
+const save = async () => {
+    await API.resetTime()
+    for (let time of timeList) {
+        await API.addTime(time)
+    }
 }
 
 init()

@@ -197,6 +197,15 @@ void serverSetup() {
     server.send(200, "text/html; charset=utf-8", "{ \"ok\": true }");
   });
 
+  server.on("/api/on/reset", HTTP_POST, [] () {
+
+    TRACE("[WebServer] Get /api/on/reset");  
+
+    store.resetPeriod();
+
+    server.send(200, "text/html; charset=utf-8", "{ \"ok\": true }");
+  });
+
   server.on("/api/every", HTTP_GET, [] () {
 
     TRACE("[WebServer] Get /api/every\n");  

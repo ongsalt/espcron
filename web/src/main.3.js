@@ -44,4 +44,11 @@ const init = async () => {
     update()
 }
 
+const save = async () => {
+    await API.resetTime()
+    for (let time of timeList) {
+        await API.addTime(time)
+    }
+}
+
 init()
