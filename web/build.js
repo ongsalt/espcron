@@ -18,12 +18,12 @@ const capitalized = (word) => word.charAt(0).toUpperCase() + word.slice(1)
 async function main() {
     let output = ""
     const dir = await fs.readdir('./src')
-    console.log(dir)
-
+    
     for (let name of dir) {
         if (name === "assets") {
             continue
         }
+        console.log(`Building ${name}`)
         const content = await fs.readFile(`./src/${name}`, { encoding: 'utf8' })
         const splitted = name.split('.')
         const formattedName = splitted[0] + capitalized(splitted [1])
@@ -34,9 +34,8 @@ async function main() {
     const toWrite = namespaceTemplate(output)
 
     const dist = await fs.open('./dist/webbuiltin.hpp', 'w')
-    const result = await dist.write(toWrite, 0, 'utf8')
-
-    console.log(result)
+    await dist.write(toWrite, 0, 'utf8')
+    console.log("Done")
 }
 
 main()
