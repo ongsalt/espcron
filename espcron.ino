@@ -228,7 +228,9 @@ void serverSetup() {
     result += " \"data\": [";
     for (int i = 0; i < store._periodSize; i++) {
       result += store.getPeriod(i).toJSON();
-      result += ",\n";
+      if (i != store._periodSize - 1) {
+        result += ",\n";
+      }
     }
     result += "]";
     result += "}";
