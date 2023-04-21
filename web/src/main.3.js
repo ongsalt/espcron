@@ -22,11 +22,24 @@ const toggleMode = (value) => {
     }
 }
 
-const init = () => {
+const init = async () => {
+    isLoading = true
+
+
+    swapConfig = await API.getEvery()
+    timeList = await API.getPeriod()
+    const res = await API.getMode()
+    console.log(res)
+    mode = res.mode
+    
     $('s1').value = swapConfig.every.hour
     $('s2').value = swapConfig.every.minute
     $('s3').value = swapConfig.for.hour
     $('s4').value = swapConfig.for.minute
+
+    isLoading = false
+    // unblock()
+
     timeListMapper()
     update()
 }

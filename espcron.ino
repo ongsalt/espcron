@@ -93,7 +93,7 @@ void serverSetup() {
   });
 
   // API route
-  server.on(UriBraces("/api/on/{}/to/{}"), HTTP_GET, [] () {
+  server.on(UriBraces("/api/on/{}/to/{}"), HTTP_POST, [] () {
     int on = server.pathArg(0).toInt();
     int duration = server.pathArg(1).toInt();
 
@@ -106,7 +106,7 @@ void serverSetup() {
     // add -> just fucking add
     store.addPeriod(Period { onHour, onMinute, durationHour, durationMinute });
 
-    TRACE("[WebServer] Get /api/on/");
+    TRACE("[WebServer] Post /api/on/");
     TRACE(server.pathArg(0).c_str());
     TRACE("/to/");
     TRACE(server.pathArg(1).c_str());
@@ -115,7 +115,7 @@ void serverSetup() {
     server.send(200, "text/html; charset=utf-8", "{ \"ok\": true, \"index\": " + String(store._periodSize - 1) + " }");
   });
 
-  server.on(UriBraces("/api/remove/{}/to/{}"), HTTP_GET, [] () {
+  server.on(UriBraces("/api/remove/{}/to/{}"), HTTP_POST, [] () {
     int on = server.pathArg(0).toInt();
     int duration = server.pathArg(1).toInt();
 
@@ -125,7 +125,7 @@ void serverSetup() {
     int durationHour = duration / 100;
     int durationMinute = duration % 100;
 
-    TRACE("[WebServer] Get /api/remove/");
+    TRACE("[WebServer] Post /api/remove/");
     TRACE(server.pathArg(0).c_str());
     TRACE("/to/");
     TRACE(server.pathArg(1).c_str());
@@ -139,8 +139,8 @@ void serverSetup() {
     server.send(200, "text/html; charset=utf-8", "{ \"ok\": true }");
   });
 
-  // server.on(UriRegex("^\\/api/every\\/([0-9]+){4}\\/for\\/([0-9]+){4}$"), HTTP_GET, [] () {
-  server.on(UriBraces("/api/every/{}/for/{}"), HTTP_GET, [] () {
+  // server.on(UriRegex("^\\/api/every\\/([0-9]+){4}\\/for\\/([0-9]+){4}$"), HTTP_POST, [] () {
+  server.on(UriBraces("/api/every/{}/for/{}"), HTTP_POST, [] () {
     int every = server.pathArg(0).toInt();
     int duration = server.pathArg(1).toInt();
 
@@ -157,7 +157,7 @@ void serverSetup() {
     Serial.print(":");
     Serial.println(duration);
 
-    TRACE("[WebServer] Get /api/every/");
+    TRACE("[WebServer] Post /api/every/");
     TRACE(server.pathArg(0).c_str());
     TRACE("/for/");
     TRACE(server.pathArg(1).c_str());
@@ -166,10 +166,10 @@ void serverSetup() {
     server.send(200, "text/html; charset=utf-8", "{ \"ok\": true }");
   });
 
-  server.on(UriRegex("^\\/api/mode\\/([0-1]+)$"), HTTP_GET, [] () {
+  server.on(UriRegex("^\\/api/mode\\/([0-1]+)$"), HTTP_POST, [] () {
     int mode = server.pathArg(0).toInt();
 
-    TRACE("[WebServer] Get /api/mode/");
+    TRACE("[WebServer] Post /api/mode/");
     TRACE(server.pathArg(0).c_str());
     TRACE("\n");
 
@@ -178,7 +178,16 @@ void serverSetup() {
     server.send(200, "application/json; charset=utf-8", "{ \"ok\": true }");
   });
 
-  server.on("/api/store/reset", HTTP_GET, [] () {
+  server.on("/api/mode", HTTP_GET, [] () {
+
+    TRACE("[WebServer] Get /api/mode/\n");
+
+    int mode = store.getMode();
+
+    server.send(200, "application/json; charset=utf-8", "{ \"mode\": " + String(mode) + " }");
+  });
+
+  server.on("/api/store/reset", HTTP_POST, [] () {
 
     TRACE("[WebServer] Get /api/store/reset");  
 
@@ -187,7 +196,7 @@ void serverSetup() {
     server.send(200, "text/html; charset=utf-8", "{ \"ok\": true }");
   });
 
-  server.on("/api/get/every", HTTP_GET, [] () {
+  server.on("/api/every", HTTP_GET, [] () {
 
     TRACE("[WebServer] Get /api/get/every");  
 
@@ -196,7 +205,7 @@ void serverSetup() {
     server.send(200, "text/html; charset=utf-8", result);
   });
 
-  server.on("/api/get/period", HTTP_GET, [] () {
+  server.on("/api/period", HTTP_GET, [] () {
 
     TRACE("[WebServer] Get /api/get/period");  
 

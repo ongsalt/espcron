@@ -156,7 +156,7 @@ public:
     EEPROM.write(StorageOffset::mode, mode);
   }
 
-  bool getMode(bool mode) {
+  bool getMode() {
     return EEPROM.read(StorageOffset::mode);
   }
 };

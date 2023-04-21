@@ -7,6 +7,7 @@ const timeListDisplay = $('list')
 
 // let mode = |mode|
 let mode = true
+let isLoading = true
 
 const swapConfig = {
     every: {
