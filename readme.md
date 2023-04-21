@@ -14,3 +14,4 @@ For more info read [features](#features)
 # Project status
 Now it can control 2 pin that shared same state. 
 This project currently in alpha and look like it'll always be. 
+*Now I'm regret that I write the frontend in vanilla javascript*
