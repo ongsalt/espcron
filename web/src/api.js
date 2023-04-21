@@ -1,12 +1,20 @@
 const prefixURL = 'http://192.168.153.220'
-const postHeader = { 
-    mode: 'no-cors',
-    method: 'POST' 
+let headers = new Headers({
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+    "User-Agent": "espcron-web"
+});
+
+const postHeader = {
+    // mode: 'no-cors',
+    method: 'POST',
+    headers
 }
 
-const getHeader = { 
-    mode: 'no-cors',
-    method: 'GET' 
+const getHeader = {
+    // mode: 'no-cors',
+    method: 'GET',
+    headers
 }
 
 const API = {
@@ -41,7 +49,7 @@ const API = {
         const res = await fetch(url, postHeader)
         const data = await res.json()
         return data
-    },    
+    },
     async getMode() {
         const url = `${prefixURL}/api/mode`
         console.log(url)
@@ -53,6 +61,7 @@ const API = {
         const url = `${prefixURL}/api/every`
         console.log(url)
         const res = await fetch(url, getHeader)
+        console.log(res)
         const data = await res.json()
         return data
     },
@@ -61,7 +70,7 @@ const API = {
         console.log(url)
         const res = await fetch(url, getHeader)
         const data = await res.json()
-        return data
+        return data.data
     },
 
 }

@@ -198,16 +198,18 @@ void serverSetup() {
 
   server.on("/api/every", HTTP_GET, [] () {
 
-    TRACE("[WebServer] Get /api/get/every");  
+    TRACE("[WebServer] Get /api/every\n");  
 
     const auto result = store.getEvery().toJSON();
+
+    TRACE(result.c_str());
 
     server.send(200, "text/html; charset=utf-8", result);
   });
 
   server.on("/api/period", HTTP_GET, [] () {
 
-    TRACE("[WebServer] Get /api/get/period");  
+    TRACE("[WebServer] Get /api/period\n");  
 
     String result;
 
@@ -221,6 +223,7 @@ void serverSetup() {
     result += "]";
     result += "}";
 
+    TRACE(result.c_str());
     server.send(200, "text/html; charset=utf-8", result);
   });
 
