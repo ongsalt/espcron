@@ -15,10 +15,16 @@ const addTimeItem = () => {
         timeList[id].end.hour = parseInt(t.slice(0, 2))
         timeList[id].end.minute = parseInt(t.slice(3, 5))
     }
-    
+
     timeDiff.push(id)
 }
 
 
-$('s1').onchange = e => swapConfig.every.hour = parseInt(e.target.value)
-$('s2').onchange = e => swapConfig.every.minute = parseInt(e.target.value)
+$('s1').onchange = e => {
+    swapConfig.every.hour = parseInt(e.target.value)
+    save2()
+}
+$('s2').onchange = e => {
+    swapConfig.every.minute = parseInt(e.target.value)
+    save2()
+}

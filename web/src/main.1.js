@@ -82,3 +82,7 @@ const removeTimeItem = (id) => {
     timeList.splice(id, 1)
     timeListMapper()
 }
+
+const save2 = async () => {
+    await API.setEvery(swapConfig)
+}
