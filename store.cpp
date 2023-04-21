@@ -19,12 +19,12 @@ struct Every {
 
     result += "{\n";
     result += "  \"every\": {\n";
-    result += "    \"hour\": \"" + String(everyHour) + "\",\n";
-    result += "    \"minute\": \"" + String(everyMinute) + "\"\n";
+    result += "    \"hour\": " + String(everyHour) + ",\n";
+    result += "    \"minute\": " + String(everyMinute) + "\n";
     result += "    },\n";
     result += "  \"for\": {\n";
-    result += "    \"hour\": \"" + String(forHour) + "\",\n";
-    result += "    \"minute\": \"" + String(forMinute) + "\"\n";
+    result += "    \"hour\": " + String(forHour) + ",\n";
+    result += "    \"minute\": " + String(forMinute) + "\n";
     result += "    }\n";
     result += "}";
 
