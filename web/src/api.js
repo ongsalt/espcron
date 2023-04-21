@@ -43,7 +43,7 @@ const API = {
         return data
     },
     async setEvery(time) {
-        const url = `${prefixURL}/api/every/${to2(time.start.hour)}${to2(time.start.minute)}/for/${to2(time.end.hour)}${to2(time.end.minute)}`
+        const url = `${prefixURL}/api/every/${to2(time.every.hour)}${to2(time.every.minute)}/for/${to2(time.for.hour)}${to2(time.for.minute)}`
         const res = await fetch(url, postHeader)
         const data = await res.json()
         return data
