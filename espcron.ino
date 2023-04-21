@@ -174,8 +174,9 @@ void serverSetup() {
     TRACE("\n");
 
     store.setMode(mode);
+    int setted = store.getMode();
 
-    server.send(200, "application/json; charset=utf-8", "{ \"ok\": true }");
+    server.send(200, "application/json; charset=utf-8", "{ \"mode\": " + String(setted) + " }");
   });
 
   server.on("/api/mode", HTTP_GET, [] () {
