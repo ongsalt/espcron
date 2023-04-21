@@ -72,14 +72,14 @@ const API = {
         console.log(url)
         const res = await fetch(url, postHeader)
         const data = await res.json()
-        return data.data
+        return data
     },
     async resetAll() {
         const url = `${prefixURL}/api/store/reset`
         console.log(url)
         const res = await fetch(url, postHeader)
         const data = await res.json()
-        return data.data
+        return data
     }
 
 }
