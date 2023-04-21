@@ -9,7 +9,7 @@ const timeListDisplay = $('list')
 let mode = true
 let isLoading = true
 
-const swapConfig = {
+let swapConfig = {
     every: {
         hour: 2,
         minute: 30
@@ -20,7 +20,7 @@ const swapConfig = {
     }
 }
 
-const timeList = [
+let timeList = [
     {
         start: {
             hour: 10,
