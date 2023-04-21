@@ -43,21 +43,21 @@ const API = {
         return data
     },    
     async getMode() {
-        const url = `http://${prefixURL}/api/mode}`
+        const url = `http://${prefixURL}/api/mode`
         console.log(url)
         const res = await fetch(url, getHeader)
         const data = await res.json()
         return data
     },
     async getEvery() {
-        const url = `http://${prefixURL}/api/mode}`
+        const url = `http://${prefixURL}/api/every`
         console.log(url)
         const res = await fetch(url, getHeader)
         const data = await res.json()
         return data
     },
     async getPeriod() {
-        const url = `http://${prefixURL}/api/mode}`
+        const url = `http://${prefixURL}/api/period`
         console.log(url)
         const res = await fetch(url, getHeader)
         const data = await res.json()
